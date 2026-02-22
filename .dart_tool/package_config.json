@@ -164,7 +164,7 @@
       "languageVersion": "3.5"
     },
     {
-      "name": "nokair_assigment",
+      "name": "nokair_assignment",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.10"

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/nokair_assigment.iml" filepath="$PROJECT_DIR$/nokair_assigment.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/nokair_assigment_android.iml" filepath="$PROJECT_DIR$/android/nokair_assigment_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/nokair_assignment.iml" filepath="$PROJECT_DIR$/nokair_assignment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/nokair_assignment_android.iml" filepath="$PROJECT_DIR$/android/nokair_assignment_android.iml" />
     </modules>
   </component>
 </project>
