@@ -48,3 +48,6 @@ macos/
 linux/
 web/
 pubspec.lock
+
+# FVM Version Cache
+.fvm/
