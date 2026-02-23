@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:nokair_assignment/bindings/initial_binding.dart';
 import 'package:sizer/sizer.dart';
 import 'screens/main_shell.dart';
 
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
           title: 'NOK Air',
           debugShowCheckedModeBanner: false,
+          initialBinding: InitialBinding(),
           theme: ThemeData(
             fontFamily: 'Roboto',
             colorScheme: ColorScheme.fromSeed(

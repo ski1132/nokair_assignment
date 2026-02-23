@@ -2,15 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:nokair_assignment/models/response_api_model.dart';
 import 'package:retrofit/retrofit.dart';
 
-part 'duty_remote.g.dart';
+part 'home_remote.g.dart';
 
 @RestApi()
-abstract class DutyRemote {
-  factory DutyRemote(
+abstract class HomeRemote {
+  factory HomeRemote(
     Dio dio, {
     String? baseUrl,
     ParseErrorLogger? errorLogger,
-  }) = _DutyRemote;
+  }) = _HomeRemote;
 
   @GET('/duty')
   Future<HttpResponse<ResponseApiModel>> getDuty();
