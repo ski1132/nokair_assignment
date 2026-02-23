@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_view.dart';
+import 'package:nokair_assignment/controllers/home_controller.dart';
 import '../../theme/app_colors.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
 
   @override
@@ -341,7 +344,16 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          _buildDutyCard(),
+          Obx(
+            () => ListView.builder(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: controller.dutyList.length,
+              itemBuilder: (context, index) {
+                return _buildDutyCard();
+              },
+            ),
+          ),
         ],
       ),
     );

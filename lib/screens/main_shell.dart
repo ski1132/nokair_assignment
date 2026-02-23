@@ -14,12 +14,7 @@ class MainShell extends GetView<MainShellController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Obx(
-        () => IndexedStack(
-          index: controller.currentIndex.value,
-          children: controller.pages,
-        ),
-      ),
+      body: Obx(() => controller.currentPage),
       bottomNavigationBar: Obx(
         () => AppBottomNavBar(
           currentIndex: controller.currentIndex.value,

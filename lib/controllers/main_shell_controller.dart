@@ -15,10 +15,14 @@ class MainShellController extends GetxController {
     ComingSoonScreen(label: 'More'),
   ];
 
-  void changeIndex(int index) {
-    if (index == 0) {
+  Widget get currentPage {
+    if (currentIndex.value == 0) {
       HomeBinding().dependencies();
     }
+    return pages[currentIndex.value];
+  }
+
+  void changeIndex(int index) {
     currentIndex.value = index;
   }
 }

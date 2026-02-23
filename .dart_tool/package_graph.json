@@ -11,6 +11,7 @@
         "dio",
         "flutter",
         "flutter_dotenv",
+        "flutter_easyloading_plus",
         "freezed_annotation",
         "get",
         "json_annotation",
@@ -151,6 +152,15 @@
         "stream_channel",
         "test_api",
         "vector_math"
+      ]
+    },
+    {
+      "name": "flutter_easyloading_plus",
+      "version": "3.1.2",
+      "dependencies": [
+        "cupertino_icons",
+        "flutter",
+        "flutter_spinkit"
       ]
     },
     {
@@ -657,6 +667,13 @@
         "stream_channel",
         "string_scanner",
         "term_glyph"
+      ]
+    },
+    {
+      "name": "flutter_spinkit",
+      "version": "5.2.2",
+      "dependencies": [
+        "flutter"
       ]
     },
     {

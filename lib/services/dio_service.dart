@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:nokair_assignment/flavors/build_config.dart';
 
 class DioService extends GetxService {
   late Dio _dio;
   Dio get dio => _dio;
 
-  String get baseUrl => dotenv.env['BASE_URL'] ?? '';
+  String get baseUrl => BuildConfig.instance.config.baseUrl;
   Map<String, Object> get headers => {
     HttpHeaders.acceptHeader: 'application/json',
     HttpHeaders.contentTypeHeader: 'application/json',
