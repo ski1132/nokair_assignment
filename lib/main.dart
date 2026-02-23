@@ -12,7 +12,14 @@ import 'screens/main_shell.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: AppColors.darkBackground,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light,
+      statusBarColor: AppColors.darkBackground,
+    ),
+  );
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await dotenv.load(fileName: '.env');
 
