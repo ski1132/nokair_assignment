@@ -12,4 +12,5 @@ class AppColors {
   static const Color textSecondary = Color(0xFF6B7280);
   static const Color green = Color(0xFF22C55E);
   static const Color blue = Color(0xFF1363FF);
+  static const Color purple = Color(0xFF7D4CDB);
 }

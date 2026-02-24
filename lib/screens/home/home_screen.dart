@@ -30,7 +30,13 @@ class HomeScreen extends GetView<HomeController> {
               _buildNotificationBar(),
               const SizedBox(height: 28),
               _buildTodaysDutiesSection(),
+              const SizedBox(height: 12),
+              _buildTodaysDutiesNote(),
               const SizedBox(height: 16),
+              _buildUpcomingDutiesSection(),
+              const SizedBox(height: 16),
+              _buildBottomActionCards(),
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -343,19 +349,23 @@ class HomeScreen extends GetView<HomeController> {
               ),
             ),
           ),
-          CircleAvatar(
-            radius: 12,
-            backgroundColor: Colors.red,
-            child: const Center(
-              child: Text(
-                'N',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
+          Obx(
+            () => (controller.dutyModel.value?.notificationsCount ?? 0) == 0
+                ? SizedBox()
+                : CircleAvatar(
+                    radius: 12,
+                    backgroundColor: Colors.red,
+                    child: const Center(
+                      child: Text(
+                        'N',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
           ),
         ],
       ),
@@ -397,9 +407,126 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
+  Widget _buildTodaysDutiesNote() {
+    return Obx(() {
+      final todayDuty = controller.dutyModel.value?.todayDuty;
+      if (todayDuty == null) {
+        return SizedBox();
+      }
+      return Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              Container(
+                width: 6,
+                decoration: BoxDecoration(
+                  color: AppColors.purple,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    bottomLeft: Radius.circular(16),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 15.w,
+                        height: 15.w,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: SvgPicture.asset(Assets.svg.noteIc),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              todayDuty.date.length > 1
+                                  ? todayDuty.date
+                                        .split(' ')
+                                        .sublist(
+                                          0,
+                                          todayDuty.date.split(' ').length - 1,
+                                        )
+                                        .join(' ')
+                                        .toUpperCase()
+                                  : '-',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              todayDuty.route.length > 1
+                                  ? todayDuty.route
+                                        .split('-')
+                                        .sublist(
+                                          0,
+                                          todayDuty.route.split('-').length - 1,
+                                        )
+                                        .join(' • ')
+                                  : '-',
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+
   Widget _buildDutyCard() {
     return Obx(() {
       final todayDuty = controller.dutyModel.value?.todayDuty;
+      if (todayDuty == null) {
+        return SizedBox(
+          height: 20.w,
+          child: Center(
+            child: Text(
+              'No Today Duties',
+              style: TextStyle(color: Colors.grey),
+            ),
+          ),
+        );
+      }
       return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -427,7 +554,7 @@ class HomeScreen extends GetView<HomeController> {
                 ],
               ),
             ),
-            _buildWindowOpen(),
+            _buildWindowOpen(todayDuty.isWindowOpen),
           ],
         ),
       );
@@ -484,32 +611,34 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  Widget _buildWindowOpen() {
+  Widget _buildWindowOpen(bool isWindowOpen) {
     return Container(
       width: 100.w,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: const BoxDecoration(
-        color: AppColors.yellow,
+      decoration: BoxDecoration(
+        color: isWindowOpen ? AppColors.yellow : Colors.transparent,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(16),
           bottomRight: Radius.circular(16),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.fingerprint, color: AppColors.textPrimary),
-          SizedBox(width: 8),
-          Text(
-            "WINDOW OPEN",
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ),
-          ),
-        ],
-      ),
+      child: isWindowOpen
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.fingerprint, color: AppColors.textPrimary),
+                SizedBox(width: 8),
+                Text(
+                  "WINDOW OPEN",
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            )
+          : SizedBox(),
     );
   }
 
@@ -639,6 +768,315 @@ class HomeScreen extends GetView<HomeController> {
           ),
         ),
       ],
+    );
+  }
+
+  // ─── Upcoming Duties ───────────────────────────────────────────────────────
+  Widget _buildUpcomingDutiesSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Text(
+                "Next Duty / Upcoming",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "(n)",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Obx(() {
+            final upcomingDuties =
+                controller.dutyModel.value?.upcomingDuties ?? [];
+            if (upcomingDuties.isEmpty) {
+              return SizedBox(
+                height: 20.w,
+                child: Center(
+                  child: Text(
+                    'No Upcoming Duties',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+              );
+            }
+            return ListView.separated(
+              shrinkWrap: true,
+              primary: false,
+              itemCount: upcomingDuties.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final duty = upcomingDuties[index];
+                return _buildUpcomingDutyCard(
+                  date: duty.dateNumber,
+                  month: duty.month,
+                  title: duty.title,
+                  subtitle: duty.dayTypeLabel,
+                  isUrgent: duty.isUrgent,
+                  urgentLabel: duty.urgentLabel,
+                  onTap: () {},
+                );
+              },
+            );
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUpcomingDutyCard({
+    required String date,
+    required String month,
+    required String title,
+    required String subtitle,
+    required bool isUrgent,
+    String? urgentLabel,
+    required VoidCallback onTap,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Container(
+              width: 6,
+              decoration: BoxDecoration(
+                color: isUrgent ? AppColors.darkBackground : AppColors.blue,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 15.w,
+                      height: 15.w,
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              month,
+                              style: const TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                            Text(
+                              date,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                subtitle,
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              if (isUrgent && urgentLabel != null) ...[
+                                const SizedBox(width: 12),
+                                Assets.icons.planIc.image(
+                                  width: 16,
+                                  height: 16,
+                                ),
+                                const SizedBox(width: 12),
+                                Text(
+                                  urgentLabel.toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.yellowAccent,
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ─── Bottom Action Cards ───────────────────────────────────────────────────
+  Widget _buildBottomActionCards() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: IntrinsicHeight(
+        child: Row(
+          children: [
+            Expanded(
+              child: _buildActionCard(
+                title: 'ROSTER',
+                subtitle: 'List and Monthly View',
+                icon: Assets.icons.planIc.image(width: 8.w, height: 8.w),
+                iconBackgroundColor: AppColors.yellowLight,
+                iconColor: AppColors.yellowAccent,
+                backgroundColor: Colors.white,
+                textColor: AppColors.textPrimary,
+                subtitleColor: Colors.grey,
+                isSignOn: false,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _buildActionCard(
+                title: 'SIGN ON',
+                subtitle: 'Window Open',
+                icon: Icon(
+                  Icons.fingerprint,
+                  color: AppColors.yellowAccent,
+                  size: 8.w,
+                ),
+                iconBackgroundColor: Colors.white.withValues(alpha: 0.2),
+                iconColor: AppColors.yellowAccent,
+                backgroundColor: AppColors.darkBackground,
+                textColor: Colors.white,
+                subtitleColor: Colors.white,
+                isSignOn: true,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionCard({
+    required String title,
+    required String subtitle,
+    required Widget icon,
+    required Color iconBackgroundColor,
+    required Color iconColor,
+    required Color backgroundColor,
+    required Color textColor,
+    required Color subtitleColor,
+    required bool isSignOn,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 6.w,
+            backgroundColor: iconBackgroundColor,
+            child: icon,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: textColor,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              if (isSignOn) ...[
+                CircleAvatar(radius: 1.w, backgroundColor: AppColors.green),
+                const SizedBox(width: 6),
+              ],
+              Expanded(
+                child: Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    color: subtitleColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

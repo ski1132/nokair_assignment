@@ -1,0 +1,59 @@
+{
+   "status":"success",
+   "data":{
+      "notifications_count":1,
+      "today_duty":{
+         "duty_id":"FLY01-02",
+         "route":"DMK-CNX-DMK",
+         "date":"Mon 12 Jan 26",
+         "timings":{
+            "report":"08:00L",
+            "duty_fdp":"5h 45m",
+            "off_clear":"13:45L",
+            "flight_time":"2h 30m",
+            "tafb":"5h 45m",
+            "layover":"0h 00m"
+         },
+         "flights":[
+            {
+               "from":"DMK",
+               "to":"CNX",
+               "flight_number":"DD 132"
+            },
+            {
+               "from":"CNX",
+               "to":"DMK",
+               "flight_number":"DD 231"
+            }
+         ],
+         "is_window_open":true
+      },
+      "upcoming_duties":[
+         {
+            "id":"u001",
+            "date_number":"13",
+            "month":"JAN",
+            "day_type_label":"TOMORROW, TUE",
+            "title":"TRG • DMK",
+            "is_urgent":false
+         },
+         {
+            "id":"u002",
+            "date_number":"15",
+            "month":"JAN",
+            "day_type_label":"FRI 15 JAN",
+            "title":"STB A-1 • DMK",
+            "is_urgent":true,
+            "urgent_label":"IN 2 DAY"
+         },
+         {
+            "id":"u003",
+            "date_number":"16",
+            "month":"JAN",
+            "day_type_label":"SAT 16 JAN",
+            "title":"FLY05-06 • DMK-HKT-DMK",
+            "is_urgent":false
+         }
+      ]
+   }
+}
