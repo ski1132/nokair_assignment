@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:nokair_assignment/controllers/home_controller.dart';
 import 'package:nokair_assignment/gen/assets.gen.dart';
 import 'package:nokair_assignment/models/today_duty_model.dart';
-import 'package:nokair_assignment/utils/format/date_format.dart';
 import 'package:nokair_assignment/widgets/clipper/right_cornor_clipper.dart';
 import 'package:nokair_assignment/widgets/container/container_curved.dart';
 import 'package:sizer/sizer.dart';
@@ -53,28 +52,38 @@ class HomeScreen extends GetView<HomeController> {
   }
 
   Widget _buildDateInfo() {
-    final date = DateTime.now();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          date.formatDayWeek(),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+    return Obx(() {
+      if (controller.dutyModel.value == null) return SizedBox();
+      if ((controller.dutyModel.value?.todayDuty.date.split(' ').length ?? 0) <
+          3) {
+        return SizedBox();
+      }
+      final dateList = controller.dutyModel.value!.todayDuty.date.split(' ');
+      final dayInWeek = dateList.first;
+      final day = dateList[1];
+      final month = dateList[2];
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            dayInWeek,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        Text(
-          date.formatDMM(symbol: ' '),
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+          Text(
+            '$day $month',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 
   Widget _buildPilotInfo() {
@@ -149,22 +158,26 @@ class HomeScreen extends GetView<HomeController> {
               ),
               const SizedBox(width: 8),
               Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.darkBackground,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: const Center(
-                  child: Text(
-                    'FLY01-02 • DMK-CNX-DMK',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+              Obx(
+                () => Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.darkBackground,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                    child: Text(
+                      controller.dutyModel.value == null
+                          ? 'No Duty'
+                          : '${controller.dutyModel.value?.todayDuty.dutyId ?? '-'} • ${controller.dutyModel.value?.todayDuty.route ?? '-'}',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -218,7 +231,7 @@ class HomeScreen extends GetView<HomeController> {
           padding: EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withValues(alpha: 0.3),
@@ -292,7 +305,7 @@ class HomeScreen extends GetView<HomeController> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withValues(alpha: 0.3),
@@ -390,7 +403,7 @@ class HomeScreen extends GetView<HomeController> {
       return Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withValues(alpha: 0.3),
@@ -414,6 +427,7 @@ class HomeScreen extends GetView<HomeController> {
                 ],
               ),
             ),
+            _buildWindowOpen(),
           ],
         ),
       );
@@ -422,13 +436,13 @@ class HomeScreen extends GetView<HomeController> {
 
   Widget _buildDutyCardHeader(TodayDutyModel? duty) {
     return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      width: 100.w,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: const BoxDecoration(
         color: AppColors.darkBackground,
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12),
-          topRight: Radius.circular(12),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
       ),
       child: Row(
@@ -437,7 +451,7 @@ class HomeScreen extends GetView<HomeController> {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: AppColors.blue,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: SvgPicture.asset(
               Assets.svg.pilotHatIc,
@@ -445,23 +459,54 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
           const SizedBox(width: 10),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${duty?.dutyId ?? '-'} • ${duty?.route ?? '-'}',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${duty?.dutyId ?? '-'} • ${duty?.route ?? '-'}',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                  ),
                 ),
-              ),
-              SizedBox(height: 2),
-              Text(
-                duty?.date ?? '-',
-                style: TextStyle(color: Colors.white60, fontSize: 11),
-              ),
-            ],
+                SizedBox(height: 2),
+                Text(
+                  duty?.date ?? '-',
+                  style: TextStyle(color: Colors.white60, fontSize: 11),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildWindowOpen() {
+    return Container(
+      width: 100.w,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: const BoxDecoration(
+        color: AppColors.yellow,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(16),
+          bottomRight: Radius.circular(16),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.fingerprint, color: AppColors.textPrimary),
+          SizedBox(width: 8),
+          Text(
+            "WINDOW OPEN",
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
           ),
         ],
       ),

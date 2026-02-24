@@ -12,14 +12,16 @@ class HomeController extends BaseController {
   final profileModel = Rxn<ProfileModel>();
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
 
-    fetchProfile();
-    fetchDuty();
+    showLoading();
+    await fetchProfile();
+    await fetchDuty();
+    hideLoading();
   }
 
-  void fetchDuty() async {
+  Future fetchDuty() async {
     dutyModel.value = null;
     await repository
         .getDuty()
@@ -46,7 +48,7 @@ class HomeController extends BaseController {
         });
   }
 
-  void fetchProfile() async {
+  Future fetchProfile() async {
     profileModel.value = null;
     await repository
         .getProfile()
