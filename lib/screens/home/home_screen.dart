@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:nokair_assignment/controllers/home_controller.dart';
 import 'package:nokair_assignment/gen/assets.gen.dart';
@@ -26,9 +27,9 @@ class HomeScreen extends GetView<HomeController> {
               _buildFlightBanner(),
               const SizedBox(height: 16),
               _buildQuickActions(),
-              const SizedBox(height: 12),
-              _buildNotificationBar(),
               const SizedBox(height: 16),
+              _buildNotificationBar(),
+              const SizedBox(height: 28),
               _buildTodaysDutiesSection(),
               const SizedBox(height: 16),
             ],
@@ -184,17 +185,17 @@ class HomeScreen extends GetView<HomeController> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildActionButton(
-            icon: Icons.calendar_month,
+            iconSvgPath: Assets.svg.calendarIc,
             label: 'Duties',
             hasNotification: false,
           ),
           _buildActionButton(
-            icon: Icons.sync_alt,
+            iconSvgPath: Assets.svg.swapIc,
             label: 'Changes',
             hasNotification: true,
           ),
           _buildActionButton(
-            icon: Icons.chat_bubble_outline,
+            iconSvgPath: Assets.svg.messageIc,
             label: 'Message',
             hasNotification: false,
           ),
@@ -204,7 +205,7 @@ class HomeScreen extends GetView<HomeController> {
   }
 
   Widget _buildActionButton({
-    required IconData icon,
+    required String iconSvgPath,
     required String label,
     required bool hasNotification,
   }) {
@@ -220,32 +221,42 @@ class HomeScreen extends GetView<HomeController> {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withValues(alpha: 0.5),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+                color: Colors.grey.withValues(alpha: 0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircleAvatar(
-                radius: 6.w,
-                backgroundColor: AppColors.yellowLight,
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  child: Center(
-                    child: Icon(icon, color: AppColors.yellow, size: 7.w),
+              Expanded(
+                child: CircleAvatar(
+                  radius: 7.w,
+                  backgroundColor: AppColors.yellowLight,
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        iconSvgPath,
+                        colorFilter: ColorFilter.mode(
+                          AppColors.yellow,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.textPrimary,
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
                 ),
               ),
             ],
@@ -255,19 +266,15 @@ class HomeScreen extends GetView<HomeController> {
           Positioned(
             top: -6,
             right: -6,
-            child: Container(
-              width: 20,
-              height: 20,
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
+            child: CircleAvatar(
+              radius: 12,
+              backgroundColor: Colors.red,
               child: const Center(
                 child: Text(
                   'N',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -288,25 +295,28 @@ class HomeScreen extends GetView<HomeController> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.5),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: Colors.grey.withValues(alpha: 0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
           ),
         ],
       ),
       child: Row(
         children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: AppColors.yellow.withValues(alpha: 0.15),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.notifications,
-              color: AppColors.yellow,
-              size: 20,
+          CircleAvatar(
+            radius: 7.w,
+            backgroundColor: AppColors.yellowLight,
+            child: Container(
+              padding: EdgeInsets.all(8),
+              child: Center(
+                child: SvgPicture.asset(
+                  Assets.svg.notificationIc,
+                  colorFilter: ColorFilter.mode(
+                    AppColors.yellow,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 12),
@@ -320,19 +330,15 @@ class HomeScreen extends GetView<HomeController> {
               ),
             ),
           ),
-          Container(
-            width: 22,
-            height: 22,
-            decoration: const BoxDecoration(
-              color: Colors.red,
-              shape: BoxShape.circle,
-            ),
+          CircleAvatar(
+            radius: 12,
+            backgroundColor: Colors.red,
             child: const Center(
               child: Text(
                 'N',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -350,13 +356,26 @@ class HomeScreen extends GetView<HomeController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Today's Duties (n)",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
-            ),
+          Row(
+            children: [
+              const Text(
+                "Today's Duties",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "(n)",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
           _buildDutyCard(),
@@ -374,9 +393,9 @@ class HomeScreen extends GetView<HomeController> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withValues(alpha: 0.5),
+              color: Colors.grey.withValues(alpha: 0.3),
               blurRadius: 10,
-              offset: const Offset(0, 3),
+              offset: const Offset(0, 5),
             ),
           ],
         ),
@@ -415,12 +434,15 @@ class HomeScreen extends GetView<HomeController> {
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(6),
+            padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.yellow.withValues(alpha: 0.2),
+              color: AppColors.blue,
               borderRadius: BorderRadius.circular(6),
             ),
-            child: const Icon(Icons.flight, color: AppColors.yellow, size: 18),
+            child: SvgPicture.asset(
+              Assets.svg.pilotHatIc,
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            ),
           ),
           const SizedBox(width: 10),
           Column(
