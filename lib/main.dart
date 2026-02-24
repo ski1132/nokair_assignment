@@ -8,7 +8,7 @@ import 'package:nokair_assignment/flavors/build_config.dart';
 import 'package:nokair_assignment/flavors/env_config.dart';
 import 'package:nokair_assignment/theme/app_colors.dart';
 import 'package:sizer/sizer.dart';
-import 'screens/main_shell.dart';
+import 'screens/splash/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: AppColors.yellow),
             useMaterial3: true,
           ),
-          home: const MainShell(),
+          home: const SplashScreen(),
           builder: EasyLoading.init(),
         );
       },
