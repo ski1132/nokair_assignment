@@ -3,4 +3,5 @@ import 'package:retrofit/dio.dart';
 
 abstract class HomeRepository {
   Future<HttpResponse<ResponseApiModel>> getDuty();
+  Future<HttpResponse<ResponseApiModel>> getProfile();
 }

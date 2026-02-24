@@ -14,4 +14,7 @@ abstract class HomeRemote {
 
   @GET('/duty')
   Future<HttpResponse<ResponseApiModel>> getDuty();
+
+  @GET('/profile')
+  Future<HttpResponse<ResponseApiModel>> getProfile();
 }

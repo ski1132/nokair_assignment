@@ -15,5 +15,6 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-1. flutter pub get
-2. flutter pub run build_runner build --delete-conflicting-outputs
+1. flutter clean
+2. flutter pub get
+3. flutter pub run build_runner build --delete-conflicting-outputs

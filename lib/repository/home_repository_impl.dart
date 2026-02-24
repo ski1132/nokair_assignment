@@ -11,4 +11,9 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<HttpResponse<ResponseApiModel>> getDuty() {
     return remoteSource.getDuty();
   }
+
+  @override
+  Future<HttpResponse<ResponseApiModel>> getProfile() {
+    return remoteSource.getProfile();
+  }
 }

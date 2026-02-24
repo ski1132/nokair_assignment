@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:nokair_assignment/controllers/home_controller.dart';
+import 'package:nokair_assignment/gen/assets.gen.dart';
+import 'package:nokair_assignment/utils/format/date_format.dart';
+import 'package:nokair_assignment/widgets/clipper/right_cornor_clipper.dart';
+import 'package:sizer/sizer.dart';
 import '../../theme/app_colors.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -10,7 +13,7 @@ class HomeScreen extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -46,24 +49,24 @@ class HomeScreen extends GetView<HomeController> {
   }
 
   Widget _buildDateInfo() {
+    final date = DateTime.now();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
-          'MONDAY',
+          date.formatDayWeek(),
           style: TextStyle(
-            color: Colors.white70,
-            fontSize: 11,
-            letterSpacing: 1.2,
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
           ),
         ),
         Text(
-          '12 JAN',
+          date.formatDMM(symbol: ' '),
           style: TextStyle(
             color: Colors.white,
-            fontSize: 28,
+            fontSize: 24,
             fontWeight: FontWeight.bold,
-            height: 1.1,
           ),
         ),
       ],
@@ -71,53 +74,50 @@ class HomeScreen extends GetView<HomeController> {
   }
 
   Widget _buildPilotInfo() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        const Text(
-          'PIC. ONGSA NANTAPIN',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: AppColors.yellow,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: const Text(
-                'DD / 12345',
+    return Obx(
+      () => Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                controller.profile.value?.name ?? '-',
                 style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 10,
+                  color: Colors.white,
+                  fontSize: 12,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            _buildAvatarBadge(),
-          ],
-        ),
-      ],
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                decoration: BoxDecoration(
+                  color: AppColors.yellow,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  '${controller.profile.value?.type ?? '-'} / ${controller.profile.value?.id ?? '-'}',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(width: 8),
+          _buildAvatarBadge(),
+        ],
+      ),
     );
   }
 
   Widget _buildAvatarBadge() {
-    return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: AppColors.yellow,
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 1.5),
-      ),
-      child: const Icon(Icons.person, color: Colors.black, size: 20),
+    return CircleAvatar(
+      radius: 7.w,
+      backgroundColor: AppColors.yellowLight,
+      backgroundImage: Assets.icons.nokairLogo.image().image,
     );
   }
 
@@ -125,49 +125,50 @@ class HomeScreen extends GetView<HomeController> {
   Widget _buildFlightBanner() {
     return Container(
       color: AppColors.darkBackground,
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-      child: Row(
-        children: [
-          Container(
-            width: 10,
-            height: 10,
-            decoration: const BoxDecoration(
-              color: AppColors.yellow,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 8),
-          const Text(
-            'FLIGHT',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              letterSpacing: 0.5,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.yellow,
-                borderRadius: BorderRadius.circular(4),
+      child: ClipPath(
+        clipper: RightCornerClipper(),
+        child: Container(
+          padding: EdgeInsets.all(12),
+          decoration: BoxDecoration(color: AppColors.yellow),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CircleAvatar(backgroundColor: AppColors.blue, radius: 1.5.w),
+              const SizedBox(width: 8),
+              const Text(
+                'FLIGHT',
+                style: TextStyle(
+                  color: AppColors.darkBackground,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              child: const Center(
-                child: Text(
-                  'FLY01-02 • DMK-CNX-DMK',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.3,
+              const SizedBox(width: 8),
+              Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.darkBackground,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Center(
+                  child: Text(
+                    'FLY01-02 • DMK-CNX-DMK',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
-            ),
+              Spacer(),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -217,7 +218,7 @@ class HomeScreen extends GetView<HomeController> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.07),
+                    color: AppColors.darkBackground,
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -273,7 +274,7 @@ class HomeScreen extends GetView<HomeController> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: AppColors.darkBackground,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -366,7 +367,7 @@ class HomeScreen extends GetView<HomeController> {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.07),
+            color: AppColors.darkBackground,
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
