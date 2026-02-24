@@ -360,7 +360,7 @@ class HomeScreen extends GetView<HomeController> {
             () => ListView.builder(
               shrinkWrap: true,
               primary: false,
-              itemCount: controller.dutyList.length,
+              itemCount: controller.dutyList.value?.upcomingDuties.length ?? 0,
               itemBuilder: (context, index) {
                 return _buildDutyCard();
               },

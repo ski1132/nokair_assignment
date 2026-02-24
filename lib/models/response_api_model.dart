@@ -7,7 +7,7 @@ part 'response_api_model.g.dart';
 @freezed
 abstract class ResponseApiModel with _$ResponseApiModel {
   const factory ResponseApiModel({
-    @IntConverter() @JsonKey(name: 'status') int? status,
+    @JsonKey(name: 'status') String? status,
     @JsonKey(name: 'message') String? message,
     @JsonKey(name: 'data') dynamic data,
   }) = _ResponseApiModel;

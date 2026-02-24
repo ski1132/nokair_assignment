@@ -8,7 +8,7 @@ import 'package:nokair_assignment/widgets/dialog/basic_alert_widget.dart';
 class HomeController extends BaseController {
   HomeRepository repository = Get.find();
 
-  final dutyList = <DutyModel>[].obs;
+  final dutyList = Rxn<DutyModel>();
   final profile = Rxn<ProfileModel>();
 
   @override
@@ -20,20 +20,20 @@ class HomeController extends BaseController {
   }
 
   void fetchDuty() async {
-    dutyList.clear();
+    dutyList.value = null;
     await repository
         .getDuty()
         .then((httpResponse) async {
           final res = httpResponse.data;
           try {
-            if ((res.status ?? 0) != 200) {
+            if (res.status != 'success') {
               logger.e(
                 'fetchDuty response status ${res.status} : ${res.message}',
               );
               BasicAlertWidget.alertWarning(contents: res.message.toString());
             } else {
-              final List jsonList = res.data as List? ?? [];
-              dutyList.addAll(jsonList.map((e) => DutyModel.fromJson(e)));
+              final json = res.data as Map<String, dynamic>? ?? {};
+              dutyList.value = DutyModel.fromJson(json);
             }
           } catch (e) {
             BasicAlertWidget.alertWarning(contents: '${e.toString()}!');
@@ -53,7 +53,7 @@ class HomeController extends BaseController {
         .then((httpResponse) async {
           final res = httpResponse.data;
           try {
-            if ((res.status ?? 0) != 200) {
+            if (res.status != 'success') {
               logger.e(
                 'fetchProfile response status ${res.status} : ${res.message}',
               );
