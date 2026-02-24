@@ -92,6 +92,12 @@
       "languageVersion": "3.8"
     },
     {
+      "name": "cli_util",
+      "rootUri": "file:///Users/ski/.pub-cache/hosted/pub.dev/cli_util-0.4.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
       "name": "clock",
       "rootUri": "file:///Users/ski/.pub-cache/hosted/pub.dev/clock-1.1.2",
       "packageUri": "lib/",
@@ -210,6 +216,12 @@
       "rootUri": "file:///Users/ski/.pub-cache/hosted/pub.dev/flutter_gen_runner-5.12.0",
       "packageUri": "lib/",
       "languageVersion": "3.4"
+    },
+    {
+      "name": "flutter_launcher_icons",
+      "rootUri": "file:///Users/ski/.pub-cache/hosted/pub.dev/flutter_launcher_icons-0.14.4",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
     },
     {
       "name": "flutter_lints",
