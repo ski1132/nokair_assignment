@@ -8,8 +8,8 @@ import 'package:nokair_assignment/widgets/dialog/basic_alert_widget.dart';
 class HomeController extends BaseController {
   HomeRepository repository = Get.find();
 
-  final dutyList = Rxn<DutyModel>();
-  final profile = Rxn<ProfileModel>();
+  final dutyModel = Rxn<DutyModel>();
+  final profileModel = Rxn<ProfileModel>();
 
   @override
   void onInit() {
@@ -20,7 +20,7 @@ class HomeController extends BaseController {
   }
 
   void fetchDuty() async {
-    dutyList.value = null;
+    dutyModel.value = null;
     await repository
         .getDuty()
         .then((httpResponse) async {
@@ -33,7 +33,7 @@ class HomeController extends BaseController {
               BasicAlertWidget.alertWarning(contents: res.message.toString());
             } else {
               final json = res.data as Map<String, dynamic>? ?? {};
-              dutyList.value = DutyModel.fromJson(json);
+              dutyModel.value = DutyModel.fromJson(json);
             }
           } catch (e) {
             BasicAlertWidget.alertWarning(contents: '${e.toString()}!');
@@ -47,7 +47,7 @@ class HomeController extends BaseController {
   }
 
   void fetchProfile() async {
-    profile.value = null;
+    profileModel.value = null;
     await repository
         .getProfile()
         .then((httpResponse) async {
@@ -60,7 +60,7 @@ class HomeController extends BaseController {
               BasicAlertWidget.alertWarning(contents: res.message.toString());
             } else {
               final json = res.data as Map<String, dynamic>? ?? {};
-              profile.value = ProfileModel.fromJson(json);
+              profileModel.value = ProfileModel.fromJson(json);
             }
           } catch (e) {
             BasicAlertWidget.alertWarning(contents: '${e.toString()}!');

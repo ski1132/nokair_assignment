@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nokair_assignment/controllers/home_controller.dart';
 import 'package:nokair_assignment/gen/assets.gen.dart';
+import 'package:nokair_assignment/models/today_duty_model.dart';
 import 'package:nokair_assignment/utils/format/date_format.dart';
 import 'package:nokair_assignment/widgets/clipper/right_cornor_clipper.dart';
+import 'package:nokair_assignment/widgets/container/container_curved.dart';
 import 'package:sizer/sizer.dart';
+
 import '../../theme/app_colors.dart';
 
 class HomeScreen extends GetView<HomeController> {
@@ -81,7 +84,7 @@ class HomeScreen extends GetView<HomeController> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                controller.profile.value?.name ?? '-',
+                controller.profileModel.value?.name ?? '-',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
@@ -96,7 +99,7 @@ class HomeScreen extends GetView<HomeController> {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  '${controller.profile.value?.type ?? '-'} / ${controller.profile.value?.id ?? '-'}',
+                  '${controller.profileModel.value?.type ?? '-'} / ${controller.profileModel.value?.id ?? '-'}',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 10,
@@ -356,55 +359,49 @@ class HomeScreen extends GetView<HomeController> {
             ),
           ),
           const SizedBox(height: 10),
-          Obx(
-            () => ListView.builder(
-              shrinkWrap: true,
-              primary: false,
-              itemCount: controller.dutyList.value?.upcomingDuties.length ?? 0,
-              itemBuilder: (context, index) {
-                return _buildDutyCard();
-              },
-            ),
-          ),
+          _buildDutyCard(),
         ],
       ),
     );
   }
 
   Widget _buildDutyCard() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.5),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          _buildDutyCardHeader(),
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Column(
-              children: [
-                _buildDutyTimes(),
-                const SizedBox(height: 14),
-                _buildDutyMetrics(),
-                const SizedBox(height: 14),
-                _buildRouteSegments(),
-              ],
+    return Obx(() {
+      final todayDuty = controller.dutyModel.value?.todayDuty;
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withValues(alpha: 0.5),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+        child: Column(
+          children: [
+            _buildDutyCardHeader(todayDuty),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  _buildDutyTimes(todayDuty),
+                  const SizedBox(height: 16),
+                  _buildDutyMetrics(todayDuty),
+                  const SizedBox(height: 16),
+                  _buildRouteSegments(todayDuty),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
-  Widget _buildDutyCardHeader() {
+  Widget _buildDutyCardHeader(TodayDutyModel? duty) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -428,9 +425,9 @@ class HomeScreen extends GetView<HomeController> {
           const SizedBox(width: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                'FLY01-02 • DMK-CNX-DMK',
+                '${duty?.dutyId ?? '-'} • ${duty?.route ?? '-'}',
                 style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
@@ -439,7 +436,7 @@ class HomeScreen extends GetView<HomeController> {
               ),
               SizedBox(height: 2),
               Text(
-                'Mon 12 Jan 26',
+                duty?.date ?? '-',
                 style: TextStyle(color: Colors.white60, fontSize: 11),
               ),
             ],
@@ -449,45 +446,47 @@ class HomeScreen extends GetView<HomeController> {
     );
   }
 
-  Widget _buildDutyTimes() {
+  Widget _buildDutyTimes(TodayDutyModel? duty) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildTimeItem(
           label: 'ON (REPORT)',
-          value: '08:00L',
+          value: duty?.timings.report ?? '-',
           valueColor: AppColors.green,
         ),
         _buildTimeItem(
-          label: 'ONLINE (FDP)',
-          value: '5h 45m',
+          label: 'DUTY (FDP)',
+          value: duty?.timings.dutyFdp ?? '-',
           valueColor: AppColors.textPrimary,
         ),
         _buildTimeItem(
           label: 'OFF (CLEAR)',
-          value: '13:45L',
+          value: duty?.timings.offClear ?? '-',
           valueColor: Colors.red,
         ),
       ],
     );
   }
 
-  Widget _buildDutyMetrics() {
+  Widget _buildDutyMetrics(TodayDutyModel? duty) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildTimeItem(
           label: 'FLIGHT TIME',
-          value: '2h 30m',
+          value: duty?.timings.flightTime ?? '-',
           valueColor: AppColors.yellow,
         ),
         _buildTimeItem(
           label: 'TAFB',
-          value: '5h 45m',
+          value: duty?.timings.tafb ?? '-',
           valueColor: AppColors.textPrimary,
         ),
         _buildTimeItem(
           label: 'LAYOVER',
-          value: '0h 00m',
-          valueColor: AppColors.textPrimary,
+          value: duty?.timings.layover ?? '-',
+          valueColor: Colors.grey,
         ),
       ],
     );
@@ -498,47 +497,51 @@ class HomeScreen extends GetView<HomeController> {
     required String value,
     required Color valueColor,
   }) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 9,
-              color: Colors.grey,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.3,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 9,
+            color: Colors.grey,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.3,
           ),
-          const SizedBox(height: 2),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: valueColor,
-            ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: valueColor,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  Widget _buildRouteSegments() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey.shade200)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  Widget _buildRouteSegments(TodayDutyModel? duty) {
+    if (duty == null || duty.flights.isEmpty) {
+      return SizedBox();
+    }
+    final flightPathList = <Widget>[];
+    flightPathList.add(_buildAirportCode(duty.flights.first.from));
+    for (final flight in duty.flights) {
+      flightPathList.add(_buildFlightSegment(flight.flightNumber));
+      flightPathList.add(_buildAirportCode(flight.to));
+    }
+    return ContainerCurved(
+      padding: const EdgeInsets.all(16),
+      backgroundColor: AppColors.yellowLight,
+      child: Column(
         children: [
-          _buildAirportCode('DMK'),
-          _buildFlightSegment('DD 132'),
-          _buildAirportCode('CNX'),
-          _buildFlightSegment('DD 231'),
-          _buildAirportCode('DMK'),
+          Divider(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: flightPathList,
+          ),
         ],
       ),
     );
@@ -549,8 +552,8 @@ class HomeScreen extends GetView<HomeController> {
       code,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 13,
-        color: AppColors.textPrimary,
+        fontSize: 14,
+        color: AppColors.yellowAccent,
       ),
     );
   }
@@ -558,21 +561,15 @@ class HomeScreen extends GetView<HomeController> {
   Widget _buildFlightSegment(String flightNo) {
     return Column(
       children: [
+        Icon(Icons.arrow_forward, color: Colors.grey, size: 16),
+        const SizedBox(height: 2),
         Text(
           flightNo,
           style: const TextStyle(
-            fontSize: 9,
-            color: Colors.grey,
-            fontWeight: FontWeight.w500,
+            fontSize: 10,
+            color: AppColors.yellowAccent,
+            fontWeight: FontWeight.bold,
           ),
-        ),
-        const SizedBox(height: 2),
-        Row(
-          children: [
-            Container(width: 30, height: 1.5, color: AppColors.yellow),
-            const Icon(Icons.flight, color: AppColors.yellow, size: 14),
-            Container(width: 30, height: 1.5, color: AppColors.yellow),
-          ],
         ),
       ],
     );

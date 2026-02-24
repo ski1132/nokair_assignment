@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:nokair_assignment/utils/format/num_converter.dart';
 
 part 'response_api_model.freezed.dart';
 part 'response_api_model.g.dart';
